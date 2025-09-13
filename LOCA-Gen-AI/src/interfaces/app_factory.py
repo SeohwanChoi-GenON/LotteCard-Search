@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from interfaces.api.router_registry import RouterRegistry
+from interfaces.router_registry import RouterRegistry
 from interfaces.api.v1.chat.chat_controller import chat_router
 from interfaces.config.settings import get_settings
 
@@ -41,7 +41,12 @@ def _configure_middleware(app: FastAPI, settings):
 def _register_routers(app: FastAPI, settings):
     """라우터 등록"""
     router_registry = RouterRegistry()
-    router_registry.register(chat_router)
+
+    router_registry.auto_register_from_config()
+    ## 라우터 수동 등록
+    # router_registry.register(chat_router)
 
     for router in router_registry.get_registered_routers():
         app.include_router(router, prefix=settings.API_V1_PREFIX)
+
+    print(f"Total registered routers: {len(router_registry.get_registered_routers())}")

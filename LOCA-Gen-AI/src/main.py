@@ -1,7 +1,6 @@
-# src/main.py
 import uvicorn
 
-from interfaces.api.app_factory import create_app
+from interfaces.app_factory import create_app
 from interfaces.config.constants import UvicornConfig
 from interfaces.config.settings import get_settings
 

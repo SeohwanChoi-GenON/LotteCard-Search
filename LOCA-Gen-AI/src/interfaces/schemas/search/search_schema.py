@@ -2,9 +2,9 @@ from enum import Enum
 
 from pydantic import BaseModel, Field
 
-from interfaces.api.schemas.search.context.context_schema import SearchContextResponse
-from interfaces.api.schemas.search.data.data_schema import SearchDataResponse
-from interfaces.api.schemas.search.meta.meta_schema import SearchMetaResponse
+from interfaces.schemas.search.context.context_schema import SearchContextResponse
+from interfaces.schemas.search.data.data_schema import SearchDataResponse
+from interfaces.schemas.search.meta.meta_schema import SearchMetaResponse
 
 
 class ServiceType(str, Enum):

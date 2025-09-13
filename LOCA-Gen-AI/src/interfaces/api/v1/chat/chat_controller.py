@@ -1,16 +1,16 @@
 from datetime import datetime
 from fastapi import APIRouter
 
-from interfaces.api.schemas.chat.chat_schema import ChatResponse, ChatRequest
-from interfaces.api.schemas.chat.meta.meta_schema import ChatMetaResponse
-from interfaces.api.schemas.chat.data.data_schema import ChatDataResponse
-from interfaces.api.schemas.chat.context.context_schema import ChatContextResponse, RetrievedContext, DocumentMetadata
+from interfaces.schemas.chat.chat_schema import ChatResponse, ChatRequest
+from interfaces.schemas.chat.context.context_schema import ChatContextResponse, RetrievedContext, DocumentMetadata
+from interfaces.schemas.chat.meta.meta_schema import ChatMetaResponse
+from interfaces.schemas.chat.data.data_schema import ChatDataResponse
 
-chat_router = APIRouter(prefix='/chat', tags=['chat'])
+chat_router = APIRouter(tags=['chat'])
 
 
 @chat_router.post(
-    path="/",
+    path="/chat",
     response_model=ChatResponse,
     summary="LOCA 통합 챗봇",
     description="사용자 질문에 대한 AI 챗봇 응답을 생성합니다."
