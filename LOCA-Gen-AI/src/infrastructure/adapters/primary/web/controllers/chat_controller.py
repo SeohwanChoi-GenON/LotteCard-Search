@@ -1,10 +1,10 @@
 from datetime import datetime
 from fastapi import APIRouter
 
-from interfaces.schemas.chat.chat_schema import ChatResponse, ChatRequest
-from interfaces.schemas.chat.context.context_schema import ChatContextResponse, RetrievedContext, DocumentMetadata
-from interfaces.schemas.chat.meta.meta_schema import ChatMetaResponse
-from interfaces.schemas.chat.data.data_schema import ChatDataResponse
+from infrastructure.adapters.primary.web.schemas import ChatResponse, ChatRequest
+from infrastructure.adapters.primary.web.schemas.chat.context.context_schema import ChatContextResponse, RetrievedContext, DocumentMetadata
+from infrastructure.adapters.primary.web.schemas import ChatMetaResponse
+from infrastructure.adapters.primary.web.schemas.chat.data.data_schema import ChatDataResponse
 
 chat_router = APIRouter(tags=['chat'])
 

@@ -1,6 +1,6 @@
 from pydantic import Field
 
-from interfaces.schemas.common.base_schema import BaseMetaResponse
+from infrastructure.adapters.primary.web.schemas.common.base_schema import BaseMetaResponse
 
 
 class SearchMetaResponse(BaseMetaResponse):

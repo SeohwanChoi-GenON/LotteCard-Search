@@ -1,9 +1,9 @@
 from pydantic import BaseModel, Field
 
-from interfaces.schemas.chat.context.context_schema import ChatContextResponse
-from interfaces.schemas.chat.data.data_schema import ChatDataResponse
-from interfaces.schemas.chat.meta.meta_schema import ChatMetaResponse
-from interfaces.schemas.common.base_schema import ServiceType
+from infrastructure.adapters.primary.web.schemas.chat.context.context_schema import ChatContextResponse
+from infrastructure.adapters.primary.web.schemas.chat.data.data_schema import ChatDataResponse
+from infrastructure.adapters.primary.web.schemas.chat.meta.meta_schema import ChatMetaResponse
+from infrastructure.adapters.primary.web.schemas.common.base_schema import ServiceType
 
 
 class ChatRequest(BaseModel):
