@@ -9,15 +9,10 @@ from datetime import datetime
 import logging
 from typing import Dict
 
-from .schemas import (
-    ChatRequest,
-    ChatResponse,
-    ChatResponseMeta,
-    ChatResponseData,
-    ChatResponseContext
-)
+from infrastructure.adapters.primary.web.common.schemas.base_schemas import ErrorResponse
+from .schemas.request_schema import ChatRequest
+from .schemas.response_schema import ChatResponse, ChatResponseMeta, ChatResponseData, ChatResponseContext
 from ..common.decorators import handle_exceptions, log_request_response, validate_request
-from ..common.error_schemas import ErrorResponse
 from ..common.response_builders import ResponseBuilder
 
 logger = logging.getLogger(__name__)
@@ -120,17 +115,3 @@ def _generate_dummy_answer(user_input: str, service_id: str) -> str:
             return f"{response}\n\n문의하신 '{user_input}'에 대한 더 자세한 정보가 필요하시면 언제든 말씀해 주세요."
 
     return f"'{user_input}'에 대한 질문을 주셔서 감사합니다. 관련 정보를 찾아서 도움을 드리겠습니다. 더 구체적인 질문이 있으시면 언제든 말씀해 주세요."
-
-
-@chat_router.get(
-    "/health",
-    summary="채팅 서비스 상태 확인",
-    description="채팅 서비스의 상태를 확인합니다."
-)
-async def health_check():
-    """채팅 서비스 헬스체크"""
-    return {
-        "status": "healthy",
-        "service": "chat_controller",
-        "timestamp": datetime.now()
-    }

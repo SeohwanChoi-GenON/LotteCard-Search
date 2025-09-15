@@ -109,13 +109,3 @@ def _generate_dummy_suggestions(user_input: str) -> List[str]:
         ]
     else:
         return base_suggestions[:4]  # 기본 4개 반환
-
-
-@suggestion_router.get(
-    "/suggestion/health",
-    summary="연관질문 서비스 헬스체크",
-    description="연관질문 서비스의 상태를 확인합니다."
-)
-async def health_check():
-    """연관질문 서비스 헬스체크"""
-    return ResponseBuilder.build_health_response("suggestion-service")

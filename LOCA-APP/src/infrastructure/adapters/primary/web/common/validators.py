@@ -6,7 +6,7 @@
 
 import re
 from typing import Optional
-from .base_schemas import ServiceId
+from infrastructure.adapters.primary.web.common.schemas.base_schemas import ServiceId
 
 
 def validate_thread_id(thread_id: str) -> str:

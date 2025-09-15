@@ -6,7 +6,7 @@ Suggestion 응답 스키마
 
 from typing import List, Optional
 from pydantic import BaseModel, Field
-from ...common.base_schemas import BaseResponse, BaseResponseMeta
+from infrastructure.adapters.primary.web.common.schemas.base_schemas import BaseResponse, BaseResponseMeta
 
 
 class SuggestionResponseMeta(BaseResponseMeta):

@@ -6,11 +6,11 @@ Chat 응답 스키마
 
 from typing import Optional, List
 from pydantic import BaseModel, Field
-from infrastructure.adapters.primary.web.common.base_schemas import (
+from infrastructure.adapters.primary.web.common.schemas.base_schemas import (
     BaseResponse,
     BaseResponseMeta,
+    RetrievedContent
 )
-from infrastructure.adapters.primary.web.common.retrieved_content_schemas import RetrievedContent
 
 
 class ChatResponseMeta(BaseResponseMeta):

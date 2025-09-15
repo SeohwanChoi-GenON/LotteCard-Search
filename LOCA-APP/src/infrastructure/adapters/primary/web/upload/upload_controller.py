@@ -5,15 +5,12 @@ import json
 import uuid
 from typing import Optional, Dict, Any
 
-from .schemas import (
-    UploadRequest,
-    UploadOperation,
-    UploadResponse,
-    UploadResponseMeta,
-    UploadData,
-    ErrorResponse
-)
-from ..common import handle_exceptions, log_request_response, validate_request
+from infrastructure.adapters.primary.web.common.decorators import handle_exceptions, log_request_response, \
+    validate_request
+from infrastructure.adapters.primary.web.common.schemas.base_schemas import ErrorResponse
+from infrastructure.adapters.primary.web.upload.schemas.request_schema import UploadRequest, UploadOperation
+from infrastructure.adapters.primary.web.upload.schemas.response_schema import UploadResponse, UploadData, \
+    UploadResponseMeta
 
 logger = logging.getLogger(__name__)
 
@@ -40,22 +37,6 @@ async def upload_document(
         file: Optional[UploadFile] = File(None, description="적재 파일"),
         request: UploadRequest = Form(...)
 ) -> UploadResponse:
-    """
-    LOCA앱 Elasticsearch 문서 업로드 엔드포인트 (AIG-LOCA-006)
-
-    **Elasticsearch 인덱스 관리를 위한 파일 업로드 API**
-
-    - **file**: 적재할 파일 (선택사항, DELETE 시에는 불필요)
-    - **request**: 업로드 요청 정보
-        - **index_name**: Elasticsearch 인덱스명
-        - **metadata**: 적재 메타데이터 (JSON 형식 문자열)
-        - **operator**: CRUD 기능 선택 (Insert/Update/Delete)
-
-    **사용 예시:**
-    - 카드 정보 문서 업로드: `index_name="card_documents"`
-    - FAQ 문서 업로드: `index_name="faq_documents"`
-    - 이벤트 정보 업로드: `index_name="event_documents"`
-    """
     try:
         logger.info(f"Processing upload request for index: {request.index_name}, operator: {request.operator}")
 
@@ -114,23 +95,6 @@ async def upload_document(
             }
         )
 
-
-@upload_router.get("/upload/health",
-                   summary="업로드 서비스 상태 확인",
-                   description="업로드 서비스의 상태를 확인합니다.")
-async def upload_health_check():
-    """업로드 서비스 헬스체크"""
-    return {
-        "status": "healthy",
-        "service": "upload_controller",
-        "supported_operations": ["Insert", "Update", "Delete"],
-        "max_file_size": "100MB",
-        "supported_indices": ["card_documents", "faq_documents", "event_documents"],
-        "timestamp": datetime.now()
-    }
-
-
-# ===================== DUMMY IMPLEMENTATIONS =====================
 
 async def _process_upload_dummy(
         file: Optional[UploadFile],

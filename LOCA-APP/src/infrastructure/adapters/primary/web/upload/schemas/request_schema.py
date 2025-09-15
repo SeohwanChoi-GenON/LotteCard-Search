@@ -29,12 +29,3 @@ class UploadRequest(BaseModel):
         description="CRUD 기능 선택",
         example="Insert"
     )
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "index_name": "card_documents",
-                "metadata": '{"category": "card", "version": "1.0", "author": "admin"}',
-                "operator": "Insert"
-            }
-        }
