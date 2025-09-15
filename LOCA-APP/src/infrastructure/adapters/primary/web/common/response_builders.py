@@ -6,7 +6,10 @@
 
 from datetime import datetime
 from typing import Optional, Dict, Any, List
-from .base_schemas import BaseResponseMeta, ErrorResponse, RetrievedContent
+
+# 올바른 import 경로로 수정
+from .error_schemas import ErrorResponse
+from .retrieved_content_schemas import RetrievedContent
 
 
 class ResponseBuilder:

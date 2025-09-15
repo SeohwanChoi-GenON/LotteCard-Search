@@ -16,8 +16,8 @@ from .schemas import (
     ChatResponseData,
     ChatResponseContext
 )
-from ..common.base_schemas import ErrorResponse, RetrievedContent
 from ..common.decorators import handle_exceptions, log_request_response, validate_request
+from ..common.error_schemas import ErrorResponse
 from ..common.response_builders import ResponseBuilder
 
 logger = logging.getLogger(__name__)

@@ -9,8 +9,8 @@ from pydantic import BaseModel, Field
 from infrastructure.adapters.primary.web.common.base_schemas import (
     BaseResponse,
     BaseResponseMeta,
-    RetrievedContent
 )
+from infrastructure.adapters.primary.web.common.retrieved_content_schemas import RetrievedContent
 
 
 class ChatResponseMeta(BaseResponseMeta):

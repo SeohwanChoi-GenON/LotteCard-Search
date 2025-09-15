@@ -5,6 +5,7 @@ from configuration.web.app_factory import create_app
 from configuration.settings.app_settings import get_settings
 from configuration.settings.constants import UvicornConfig
 from configuration.di_container import init_container
+from configuration.startup.bootstrap import bootstrap_application
 
 # 로깅 설정
 logging.basicConfig(
@@ -23,6 +24,9 @@ def create_application():
     if app is None:
         # 설정 로드
         settings = get_settings()
+
+        # 부트스트랩 초기화 (추가된 부분)
+        context = bootstrap_application(settings)
 
         # DI 컨테이너 초기화
         init_container(settings)
