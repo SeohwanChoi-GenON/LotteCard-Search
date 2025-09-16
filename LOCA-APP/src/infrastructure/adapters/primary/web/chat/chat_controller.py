@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request, Response
 from datetime import datetime
 import logging
 from typing import Dict
@@ -6,6 +6,7 @@ from typing import Dict
 from infrastructure.adapters.primary.web.common.schemas.base_schemas import ErrorResponse
 from .schemas.request_schema import CompletionRequest
 from .schemas.response_schema import CompletionResponse, CompletionResponseMeta, CompletionResponseData
+from ..common.HeaderInfo import HeaderInfo, HeaderProcessor
 from ..common.decorators import handle_exceptions, log_request_response, validate_request
 
 logger = logging.getLogger(__name__)
@@ -40,11 +41,19 @@ def get_next_message_id(thread_id: str) -> int:
 @handle_exceptions
 @log_request_response
 @validate_request
-async def process_chat(request: CompletionRequest) -> CompletionResponse:
-    return await _process_chat_dummy(request)
+async def process_chat(
+        request_body: CompletionRequest, request_header: Request, response: Response
+) -> CompletionResponse:
+    # 헤더 정보 추출
+    header_info = HeaderProcessor.extract_from_request(request_header)
+
+    # 응답 헤더 설정
+    HeaderProcessor.set_response_headers(response, header_info)
+
+    return await _process_chat_dummy(request_body, header_info)
 
 
-async def _process_chat_dummy(request: CompletionRequest) -> CompletionResponse:
+async def _process_chat_dummy(request: CompletionRequest, header_info: HeaderInfo) -> CompletionResponse:
     answer = _generate_dummy_answer(request.user_input, request.service_id.value)
     message_id = get_next_message_id(request.thread_id)
 

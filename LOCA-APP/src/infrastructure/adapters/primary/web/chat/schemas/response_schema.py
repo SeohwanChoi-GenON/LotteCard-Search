@@ -5,6 +5,7 @@ Chat 응답 스키마
 """
 
 from pydantic import BaseModel, Field
+
 from infrastructure.adapters.primary.web.common.schemas.base_schemas import (
     BaseResponse,
     BaseResponseMeta
