@@ -4,16 +4,14 @@ Chat 응답 스키마
 채팅 관련 응답 데이터 모델을 정의합니다.
 """
 
-from typing import Optional, List
 from pydantic import BaseModel, Field
 from infrastructure.adapters.primary.web.common.schemas.base_schemas import (
     BaseResponse,
-    BaseResponseMeta,
-    RetrievedContent
+    BaseResponseMeta
 )
 
 
-class ChatResponseMeta(BaseResponseMeta):
+class CompletionResponseMeta(BaseResponseMeta):
     """채팅 응답 메타 스키마"""
 
     message_id: int = Field(
@@ -23,7 +21,7 @@ class ChatResponseMeta(BaseResponseMeta):
     )
 
 
-class ChatResponseData(BaseModel):
+class CompletionResponseData(BaseModel):
     """채팅 응답 데이터 스키마"""
 
     general_answer: str = Field(
@@ -33,29 +31,12 @@ class ChatResponseData(BaseModel):
         example="롯데카드를 이용하시면 다양한 할인 혜택을 받으실 수 있습니다..."
     )
 
-    general_answer_template: Optional[dict] = Field(
-        None,
-        description="템플릿 답변 구조",
-        example=None
-    )
 
-
-class ChatResponseContext(BaseModel):
-    """채팅 응답 컨텍스트 스키마"""
-
-    retrieved_contents: Optional[List[RetrievedContent]] = Field(
-        None,
-        description="관련 문서 목록",
-        example=[]
-    )
-
-
-class ChatResponse(BaseResponse):
+class CompletionResponse(BaseResponse):
     """채팅 응답 스키마"""
 
-    meta: ChatResponseMeta
-    data: ChatResponseData
-    context: ChatResponseContext
+    meta: CompletionResponseMeta
+    data: CompletionResponseData
 
     class Config:
         json_schema_extra = {
@@ -69,10 +50,7 @@ class ChatResponse(BaseResponse):
                 },
                 "data": {
                     "general_answer": "롯데카드를 이용하시면 다양한 할인 혜택을 받으실 수 있습니다...",
-                    "general_answer_template": None
-                },
-                "context": {
-                    "retrieved_contents": []
+                    # "general_answer_template": None
                 }
             }
         }

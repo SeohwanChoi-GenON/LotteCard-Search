@@ -16,8 +16,8 @@ logger = logging.getLogger(__name__)
 
 # 라우터 생성 (자동 발견을 위함)
 upload_router = APIRouter(
-    prefix="/loca-talk",
-    tags=["loca-talk"],
+    prefix="/settings",
+    tags=["Settings"],
     responses={
         400: {"model": ErrorResponse, "description": "잘못된 요청"},
         422: {"model": ErrorResponse, "description": "유효성 검증 실패"},

@@ -1,9 +1,3 @@
-"""
-연관질문 생성 컨트롤러
-
-연관질문 생성 API 엔드포인트를 제공합니다.
-"""
-
 import logging
 from fastapi import APIRouter, HTTPException, status
 from typing import List
@@ -16,13 +10,13 @@ from ..common.response_builders import ResponseBuilder
 logger = logging.getLogger(__name__)
 
 suggestion_router = APIRouter(
-    prefix="/api/v1/loca-talk",
-    tags=["loca-talk"]
+    prefix="/chat",
+    tags=["Chat"]
 )
 
 
 @suggestion_router.post(
-    "/suggestion",
+    "/suggestions",
     response_model=SuggestionResponse,
     summary="연관질문 생성",
     description="사용자의 질문과 대화 컨텍스트를 바탕으로 연관질문을 생성합니다."
@@ -31,26 +25,17 @@ suggestion_router = APIRouter(
 @log_request_response
 @validate_request
 async def generate_suggestions(request: SuggestionRequest) -> SuggestionResponse:
-    """연관질문 생성 API"""
-
     try:
         logger.info(f"Generating suggestions for thread_id: {request.thread_id}, message_id: {request.message_id}")
 
-        # TODO: 실제 비즈니스 로직 연결
-        # suggestion_service = get_container().suggestion_service()
-        # suggestions = await suggestion_service.generate_suggestions(request)
-
-        # 임시 더미 데이터
         dummy_suggestions = _generate_dummy_suggestions(request.user_input)
 
-        # 응답 메타 생성
         meta_data = ResponseBuilder.build_success_meta(
             thread_id=request.thread_id,
             message_id=request.message_id,
             custom_message="연관질문 생성 성공"
         )
 
-        # 응답 구성
         response = SuggestionResponse(
             meta=meta_data,
             data={
@@ -74,8 +59,6 @@ async def generate_suggestions(request: SuggestionRequest) -> SuggestionResponse
 
 
 def _generate_dummy_suggestions(user_input: str) -> List[str]:
-    """더미 연관질문 생성 (개발용)"""
-
     # 사용자 입력에 따른 더미 연관질문 생성
     base_suggestions = [
         "다른 혜택도 있나요?",
@@ -85,7 +68,6 @@ def _generate_dummy_suggestions(user_input: str) -> List[str]:
         "비슷한 다른 서비스는 어떤게 있나요?"
     ]
 
-    # 사용자 입력 키워드에 따른 맞춤형 연관질문
     if "카드" in user_input:
         return [
             "다른 카드 혜택도 있나요?",

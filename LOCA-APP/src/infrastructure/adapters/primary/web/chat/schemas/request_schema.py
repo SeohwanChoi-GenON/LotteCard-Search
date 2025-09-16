@@ -4,13 +4,12 @@ Chat 요청 스키마
 채팅 관련 요청 데이터 모델을 정의합니다.
 """
 
-from pydantic import Field, BaseModel
+from pydantic import Field
 
 from infrastructure.adapters.primary.web.common.schemas.base_request_schema import BaseRequestData
-from infrastructure.adapters.primary.web.common.schemas.gateway_request_scehma import GatewayComm
 
 
-class ChatRequestData(BaseRequestData):
+class CompletionRequestData(BaseRequestData):
     """채팅 요청 데이터"""
     user_input: str = Field(
         ...,
@@ -20,8 +19,6 @@ class ChatRequestData(BaseRequestData):
     )
 
 
-class ChatRequest(BaseModel):
+class CompletionRequest(CompletionRequestData):
     """채팅 요청"""
-    COMM: GatewayComm
-    data: ChatRequestData
-
+    pass

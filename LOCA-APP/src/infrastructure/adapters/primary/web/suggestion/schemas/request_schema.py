@@ -4,10 +4,9 @@ Suggestion 요청 스키마
 연관질문 생성 관련 요청 데이터 모델을 정의합니다.
 """
 
-from typing import Optional, List
+from typing import Optional
 from pydantic import Field, validator, BaseModel
 
-from infrastructure.adapters.primary.web.common.schemas.base_schemas import RetrievedContent
 from ...common.schemas.base_request_schema import BaseRequestData
 from ...common.schemas.gateway_request_scehma import GatewayComm
 from ...common.validators import validate_user_input, validate_message_id
@@ -28,12 +27,6 @@ class SuggestionRequestData(BaseRequestData):
         max_length=1000,
         description="사용자 질문 내용",
         example="할인되는 카드 있나요?"
-    )
-
-    retrieved_contents: Optional[List[RetrievedContent]] = Field(
-        None,
-        description="검색된 문서 목록",
-        example=[]
     )
 
     generated_answer: Optional[str] = Field(

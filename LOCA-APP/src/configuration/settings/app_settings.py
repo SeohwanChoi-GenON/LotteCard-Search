@@ -17,7 +17,7 @@ class AppSettings(BaseSettings):
     TIMEOUT_KEEP_ALIVE: int = 30
 
     # API
-    API_V1_PREFIX: str = "/api/v1"
+    API_V1_PREFIX: str = "/api/v1/kms-talk"
     DOCS_URL: str = "/docs"
     REDOC_URL: str = "/redoc"
 

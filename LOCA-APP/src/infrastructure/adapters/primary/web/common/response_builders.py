@@ -6,12 +6,11 @@
 
 from datetime import datetime
 from typing import Optional, Dict, Any, List
-from infrastructure.adapters.primary.web.common.schemas.base_schemas import ErrorResponse, RetrievedContent
+from infrastructure.adapters.primary.web.common.schemas.base_schemas import ErrorResponse
 
 
 class ResponseBuilder:
     """공통 응답 빌드 헬퍼 클래스"""
-
     @staticmethod
     def build_success_meta(
             thread_id: str,
@@ -69,22 +68,3 @@ class ResponseBuilder:
             error_message=message,
             details=details
         )
-
-    @staticmethod
-    def build_dummy_retrieved_contents(
-            user_input: str,
-            count: int = 2
-    ) -> List[RetrievedContent]:
-        """더미 검색 결과 생성 (개발용)"""
-        contents = []
-
-        for i in range(count):
-            contents.append(RetrievedContent(
-                document_id=f"doc_{i+1:03d}",
-                title=f"관련 문서 {i+1}",
-                content=f"'{user_input}'과 관련된 문서 내용입니다...",
-                score=0.95 - (i * 0.1),
-                source=f"database_{i+1}"
-            ))
-
-        return contents
