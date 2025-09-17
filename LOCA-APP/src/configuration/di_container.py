@@ -17,6 +17,9 @@ from abc import ABC, abstractmethod
 # from infrastructure.adapters.secondary.llm.embedding_adapter import EmbeddingAdapter
 
 from configuration.settings.app_settings import AppSettings
+from configuration.settings.logger.logger_config import get_logger
+
+logger = get_logger()
 
 
 class DIContainer:
@@ -101,3 +104,8 @@ def get_container() -> DIContainer:
 def init_container(settings: AppSettings) -> None:
     global _container
     _container = DIContainer(settings)
+
+async def cleanup_container() -> None:
+    """DI 컨테이너 정리"""
+    # 데이터베이스 연결 종료, 캐시 정리 등
+    logger.info("DI Container cleanup completed")

@@ -203,6 +203,12 @@ def bootstrap_application(settings: AppSettings) -> dict:
     print_startup_banner(settings, context)
     return context
 
+async def cleanup_application(context: dict) -> None:
+    """애플리케이션 컨텍스트 정리"""
+    # 외부 서비스 연결 종료, 임시 파일 정리 등
+    logger = logging.getLogger(__name__)
+    logger.info("Application context cleanup completed")
+
 
 # 개발 편의를 위한 헬퍼 함수들
 def get_health_info(settings: AppSettings) -> dict:

@@ -1,6 +1,5 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from typing import AsyncGenerator, Callable
 import logging
 
 from configuration.web.router_registry import RouterRegistry
@@ -10,7 +9,7 @@ from configuration.settings.app_settings import AppSettings
 logger = logging.getLogger(__name__)
 
 
-def create_app(settings: AppSettings) -> FastAPI:
+def create_app(settings: AppSettings, lifespan: Callable[[FastAPI], AsyncGenerator[None, None]] = None) -> FastAPI:
     """FastAPI 애플리케이션 팩토리"""
 
     app = FastAPI(
@@ -19,7 +18,8 @@ def create_app(settings: AppSettings) -> FastAPI:
         description=settings.APP_DESCRIPTION,
         docs_url=settings.DOCS_URL if settings.DEBUG else None,
         redoc_url=settings.REDOC_URL if settings.DEBUG else None,
-        openapi_url="/openapi.json" if settings.DEBUG else None
+        openapi_url="/openapi.json" if settings.DEBUG else None,
+        lifespan=lifespan  # lifespan 추가
     )
 
     # 미들웨어 설정
