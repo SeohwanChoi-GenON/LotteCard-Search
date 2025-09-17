@@ -2,12 +2,13 @@ from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
 from fastapi import APIRouter
 import importlib
-import logging
 import os
 import inspect
 from pathlib import Path
 
-logger = logging.getLogger(__name__)
+from configuration.settings.logger.logger_config import get_logger
+
+logger = get_logger()
 
 
 @dataclass

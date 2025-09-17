@@ -10,10 +10,11 @@ from configuration.settings.app_settings import get_settings
 from configuration.settings.constants import UvicornConfig
 from configuration.settings.logger.logger_config import get_logger, configure_logging
 from configuration.startup.bootstrap import bootstrap_application, cleanup_application
-from configuration.web.app_factory import create_app
+from configuration.factories.app_factory import create_app
 
 
 logger = get_logger()
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
@@ -41,7 +42,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         init_container(settings)
         logger.info("DI Container initialized")
 
-        # 애플리케이션 상태를 app.state에 저장
+        # 애플리케이션 상태를 factories.state에 저장
         app.state.context = context
         app.state.settings = settings
 

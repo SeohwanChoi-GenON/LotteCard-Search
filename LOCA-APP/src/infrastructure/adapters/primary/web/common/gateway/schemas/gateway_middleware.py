@@ -2,11 +2,12 @@ from fastapi import Request, Response
 from typing import Optional, Dict, Any
 import json
 import asyncio
-import logging
+
+from configuration.settings.logger.logger_config import get_logger
 from .gateway_header import GatewayHeader
 from configuration.settings.app_settings import get_settings
 
-logger = logging.getLogger(__name__)
+logger = get_logger()
 
 
 class GatewayProcessor:

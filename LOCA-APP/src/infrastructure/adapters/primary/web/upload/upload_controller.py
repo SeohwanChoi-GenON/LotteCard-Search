@@ -5,6 +5,7 @@ import json
 import uuid
 from typing import Optional, Dict, Any
 
+from configuration.settings.logger.logger_config import get_logger
 from infrastructure.adapters.primary.web.common.decorators import handle_exceptions, log_request_response, \
     validate_request
 from infrastructure.adapters.primary.web.common.schemas.base_schemas import ErrorResponse
@@ -12,7 +13,7 @@ from infrastructure.adapters.primary.web.upload.schemas.request_schema import Up
 from infrastructure.adapters.primary.web.upload.schemas.response_schema import UploadResponse, UploadData, \
     UploadResponseMeta
 
-logger = logging.getLogger(__name__)
+logger = get_logger()
 
 # 라우터 생성 (자동 발견을 위함)
 upload_router = APIRouter(

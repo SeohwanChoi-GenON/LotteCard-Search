@@ -4,9 +4,9 @@ from pydantic import Field
 from pydantic_settings import BaseSettings
 from typing import List, Optional
 
-from configuration.settings.datebase_settings import DatabaseSettings
-from configuration.settings.gateway_settings import GatewaySettings
-from configuration.settings.llm_settings import LLMSettings
+from configuration.settings.outbound.datebase_settings import DatabaseSettings
+from configuration.settings.inbound.gateway_settings import GatewaySettings
+from configuration.settings.outbound.llm_settings import LLMSettings
 
 
 

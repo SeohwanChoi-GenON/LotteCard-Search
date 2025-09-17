@@ -1,10 +1,11 @@
-import logging
 import functools
 from typing import Callable, Any
 from fastapi import HTTPException, status, Request, Response
+
+from configuration.settings.logger.logger_config import get_logger
 from .response_builders import ResponseBuilder
 
-logger = logging.getLogger(__name__)
+logger = get_logger()
 
 
 def handle_exceptions(func: Callable) -> Callable:

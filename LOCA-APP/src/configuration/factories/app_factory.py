@@ -2,11 +2,11 @@ from fastapi import FastAPI
 from typing import AsyncGenerator, Callable
 import logging
 
-from configuration.web.router_registry import RouterRegistry
-from configuration.web.middleware_config import configure_middleware
+from configuration.factories.middleware_factory import configure_middleware
+from configuration.factories.router_factory import RouterRegistry
 from configuration.settings.app_settings import AppSettings
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 def create_app(settings: AppSettings, lifespan: Callable[[FastAPI], AsyncGenerator[None, None]] = None) -> FastAPI:

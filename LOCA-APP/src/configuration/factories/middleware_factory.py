@@ -1,12 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
 import time
-import logging
 
 from configuration.settings.app_settings import AppSettings
+from configuration.settings.logger.logger_config import get_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger()
 
 
 def configure_middleware(app: FastAPI, settings: AppSettings) -> None:

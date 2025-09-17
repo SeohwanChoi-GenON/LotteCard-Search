@@ -6,9 +6,9 @@ import logging
 from typing import Optional
 
 from configuration.settings.app_settings import AppSettings
+from configuration.settings.logger.logger_config import get_logger
 
-
-logger = logging.getLogger(__name__)
+logger = get_logger()
 
 
 def setup_application_logging(settings: AppSettings) -> None:
@@ -206,7 +206,6 @@ def bootstrap_application(settings: AppSettings) -> dict:
 async def cleanup_application(context: dict) -> None:
     """애플리케이션 컨텍스트 정리"""
     # 외부 서비스 연결 종료, 임시 파일 정리 등
-    logger = logging.getLogger(__name__)
     logger.info("Application context cleanup completed")
 
 
