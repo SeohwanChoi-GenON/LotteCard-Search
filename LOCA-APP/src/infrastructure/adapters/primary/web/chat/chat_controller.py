@@ -48,10 +48,9 @@ async def process_chat(
         request: Request,
         response: Response
 ) -> CompletionResponse:
+    print(request.headers)
 
     return await _process_chat_dummy(request_body)
-
-
 
 async def _process_chat_dummy(request: CompletionRequest) -> CompletionResponse:
     answer = _generate_dummy_answer(request.user_input, request.service_id.value)

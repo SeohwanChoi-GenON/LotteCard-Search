@@ -116,7 +116,6 @@ class GatewayProcessor:
 
     @staticmethod
     def _validate_required_fields(data: Dict[str, str], settings) -> bool:
-        """✅ 더 강력한 필수 필드 검증"""
         required_fields = ["GUID", "SRC_SYS_CD", "STC_BIZ_CDD", "GRAM_PRG_NO", "GRAN_NO", "TSMT"]
 
         # 엄격한 검증 또는 기본 검증 모두 6개 필드 필수로 변경

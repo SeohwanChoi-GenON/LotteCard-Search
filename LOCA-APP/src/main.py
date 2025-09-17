@@ -1,3 +1,5 @@
+import sys
+
 import uvicorn
 import logging
 
@@ -10,7 +12,11 @@ from configuration.startup.bootstrap import bootstrap_application
 # 로깅 설정
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(funcName)s() - %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout),
+        logging.FileHandler('app.log', encoding='utf-8')  # 파일 로그도 추가
+    ]
 )
 
 logger = logging.getLogger(__name__)

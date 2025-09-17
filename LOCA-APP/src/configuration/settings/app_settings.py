@@ -32,7 +32,7 @@ class AppSettings(BaseSettings):
     # CORS
     ALLOWED_ORIGINS: List[str] = ["*"]
 
-    # === 하위 설정들 ===
+    # === 하위 설정들 ===rmrp
     gateway: GatewaySettings = Field(default_factory=GatewaySettings)
     database: DatabaseSettings = Field(default_factory=DatabaseSettings)
     llm: LLMSettings = Field(default_factory=LLMSettings)

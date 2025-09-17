@@ -1,7 +1,3 @@
-"""
-Service ID Value Object
-"""
-
 from dataclasses import dataclass
 from enum import Enum
 
@@ -33,13 +29,3 @@ class ServiceIdVO:
 
     def __str__(self) -> str:
         return self.value.value
-
-    @property
-    def is_unified(self) -> bool:
-        """통합 서비스 여부"""
-        return self.value == ServiceType.UNIFIED
-
-    @property
-    def requires_specific_search(self) -> bool:
-        """특정 검색이 필요한 서비스인지"""
-        return self.value in [ServiceType.CARD, ServiceType.EVENT, ServiceType.CONTENTS]

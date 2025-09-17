@@ -25,6 +25,13 @@ class CompletionRequestData(BaseRequestData):
         example="할인되는 카드 있나요?"
     )
 
+    search_type: str = Field(
+        ...,
+        max_length=50,
+        description="검색 유형",
+        example="internal"
+    )
+
 
 class CompletionRequest(CompletionRequestData):
     """채팅 요청"""
