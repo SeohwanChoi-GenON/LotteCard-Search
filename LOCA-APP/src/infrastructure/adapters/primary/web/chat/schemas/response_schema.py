@@ -32,6 +32,14 @@ class CompletionResponseData(BaseModel):
         example="롯데카드를 이용하시면 다양한 할인 혜택을 받으실 수 있습니다..."
     )
 
+    general_answer_template: str = Field(
+        ...,
+        max_length=5000,
+        description="AI 생성 답변",
+        example="롯데카드를 이용하시면 다양한 할인 혜택을 받으실 수 있습니다..."
+    )
+
+
 
 class CompletionResponse(BaseResponse):
     """채팅 응답 스키마"""

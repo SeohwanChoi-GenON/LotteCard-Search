@@ -11,12 +11,6 @@ class BaseRequestData(BaseModel):
         description="대화 세션 고유 ID",
         example="thread_12345"
     )
-    user_id: str = Field(
-        ...,
-        max_length=20,
-        description="사용자 ID",
-        example="user_001"
-    )
     service_id: ServiceId = Field(
         ...,
         description="서비스 식별자",

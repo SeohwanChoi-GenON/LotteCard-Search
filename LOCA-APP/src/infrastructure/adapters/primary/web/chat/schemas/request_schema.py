@@ -11,6 +11,13 @@ from infrastructure.adapters.primary.web.common.schemas.base_request_schema impo
 
 class CompletionRequestData(BaseRequestData):
     """채팅 요청 데이터"""
+    user_id: str = Field(
+        ...,
+        max_length=20,
+        description="사용자 ID",
+        example="user_001"
+    )
+
     user_input: str = Field(
         ...,
         max_length=1000,
