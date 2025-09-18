@@ -1,15 +1,12 @@
 from fastapi import APIRouter, Request, Response
 from datetime import datetime
-import logging
 from typing import Dict
 
-from configuration.settings.logger.logger_config import get_logger
+from configuration.factories.logger_factory import get_logger
 from infrastructure.adapters.primary.web.common.schemas.base_schemas import ErrorResponse
 from .schemas.request_schema import CompletionRequest
 from .schemas.response_schema import CompletionResponse, CompletionResponseMeta, CompletionResponseData
-from infrastructure.adapters.primary.web.common.gateway.HeaderInfo import HeaderInfo
 from ..common.decorators import handle_exceptions, log_request_response, validate_request, handle_gateway_integration
-from ..common.gateway.schemas.gateway_middleware import GatewayProcessor
 
 logger = get_logger()
 

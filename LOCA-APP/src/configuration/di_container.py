@@ -1,5 +1,4 @@
 from typing import Dict, Any
-from abc import ABC, abstractmethod
 
 # from domain.ports.conversation_repository import ConversationRepository
 # from domain.ports.query_understanding_service_port import QueryUnderstandingServicePort
@@ -17,7 +16,7 @@ from abc import ABC, abstractmethod
 # from infrastructure.adapters.secondary.llm.embedding_adapter import EmbeddingAdapter
 
 from configuration.settings.app_settings import AppSettings
-from configuration.settings.logger.logger_config import get_logger
+from configuration.factories.logger_factory import get_logger
 
 logger = get_logger()
 

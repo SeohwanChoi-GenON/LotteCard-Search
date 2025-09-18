@@ -2,7 +2,7 @@ import functools
 from typing import Callable, Any
 from fastapi import HTTPException, status, Request, Response
 
-from configuration.settings.logger.logger_config import get_logger
+from configuration.factories.logger_factory import get_logger
 from .response_builders import ResponseBuilder
 
 logger = get_logger()

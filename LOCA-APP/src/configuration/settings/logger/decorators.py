@@ -4,7 +4,7 @@
 import functools
 import time
 from typing import Callable, Any, Optional
-from .logger_config import get_logger
+from configuration.factories.logger_factory import get_logger
 
 
 def log_execution_time(

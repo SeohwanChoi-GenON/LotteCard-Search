@@ -3,7 +3,7 @@ from typing import Optional, Dict, Any
 import json
 import asyncio
 
-from configuration.settings.logger.logger_config import get_logger
+from configuration.factories.logger_factory import get_logger
 from .gateway_header import GatewayHeader
 from configuration.settings.app_settings import get_settings
 

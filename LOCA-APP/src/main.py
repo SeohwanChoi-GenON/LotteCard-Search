@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from configuration.di_container import init_container, cleanup_container
 from configuration.settings.app_settings import get_settings
 from configuration.settings.constants import UvicornConfig
-from configuration.settings.logger.logger_config import get_logger, configure_logging
+from configuration.factories.logger_factory import get_logger, configure_logging
 from configuration.startup.bootstrap import bootstrap_application, cleanup_application
 from configuration.factories.app_factory import create_app
 

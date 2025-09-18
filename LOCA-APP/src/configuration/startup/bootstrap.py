@@ -6,7 +6,7 @@ import logging
 from typing import Optional
 
 from configuration.settings.app_settings import AppSettings
-from configuration.settings.logger.logger_config import get_logger
+from configuration.factories.logger_factory import get_logger
 
 logger = get_logger()
 

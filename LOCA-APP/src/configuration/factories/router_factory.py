@@ -1,212 +1,161 @@
-from typing import List, Dict, Any, Optional
+"""라우터 자동 등록 팩토리"""
+from typing import List, Optional
 from dataclasses import dataclass
 from fastapi import APIRouter
 import importlib
-import os
+import logging
 import inspect
 from pathlib import Path
 
-from configuration.settings.logger.logger_config import get_logger
-
-logger = get_logger()
+logger = logging.getLogger(__name__)
 
 
 @dataclass
 class RouterConfig:
+    """라우터 설정"""
     module_path: str
     router_name: str
     prefix: Optional[str] = None
     tags: Optional[List[str]] = None
-    enabled: bool = True
 
 
 class RouterRegistry:
+    """라우터 자동 발견 및 등록"""
+
     def __init__(self):
         self._routers: List[APIRouter] = []
-        self._base_router_paths = [
-            "infrastructure.adapters.primary.web"
-        ]
+        self._scan_paths = ["infrastructure.adapters.primary.web"]
 
-    def register_router(self, router: APIRouter) -> None:
-        """라우터 수동 등록"""
-        self._routers.append(router)
-        logger.info(f"Manually registered router: {router.__class__.__name__}")
+    def get_routers(self) -> List[APIRouter]:
+        """등록된 라우터 반환"""
+        return self._routers.copy()
 
-    def auto_register_from_configs(self) -> None:
-        """자동 라우터 발견 및 등록"""
-        # 개발용 기본 라우터 추가
-        self._add_basic_routes()
+    def setup_all_routers(self) -> None:
+        """모든 라우터 설정 (진입점)"""
+        self._add_system_routes()
+        self._discover_and_register_routers()
 
-        # 라우터 자동 발견
-        discovered_routers = self._discover_routers()
+    def _add_system_routes(self) -> None:
+        """시스템 기본 라우터 추가"""
+        system_router = APIRouter(tags=["system"])
 
-        for router_config in discovered_routers:
-            try:
-                self._register_router_from_config(router_config)
-            except Exception as e:
-                logger.error(f"Failed to register router {router_config.router_name}: {e}")
-
-    def _add_basic_routes(self):
-        """개발용 기본 라우터 - 최소한의 엔드포인트"""
-        basic_router = APIRouter(tags=["system"])
-
-        @basic_router.get("/health")
+        @system_router.get("/health")
         async def health_check():
-            return {"status": "healthy", "service": "LOCA Chat API", "version": "1.0.0"}
+            return {
+                "status": "healthy",
+                "service": "LOCA Chat API",
+                "version": "1.0.0"
+            }
 
-        @basic_router.get("/")
+        @system_router.get("/")
         async def root():
             return {
                 "message": "LOCA Chat API",
                 "version": "1.0.0",
-                "docs": "/docs",
-                "health": "/api/v1/health"
+                "docs": "/docs"
             }
 
-        self.register_router(basic_router)
+        self._routers.append(system_router)
+        logger.info("System routes added")
 
-    def _discover_routers(self) -> List[RouterConfig]:
-        """라우터 자동 발견"""
-        discovered = []
-
-        for base_path in self._base_router_paths:
+    def _discover_and_register_routers(self) -> None:
+        """라우터 발견 및 등록"""
+        for scan_path in self._scan_paths:
             try:
-                configs = self._scan_module_for_routers(base_path)
-                discovered.extend(configs)
-            except ImportError as e:
-                logger.info(f"Module not found, skipping: {base_path} ({e})")
+                routers = self._find_routers_in_path(scan_path)
+                self._routers.extend(routers)
+                logger.info(f"Found {len(routers)} routers in {scan_path}")
             except Exception as e:
-                logger.error(f"Error scanning module {base_path}: {e}")
+                logger.warning(f"Failed to scan {scan_path}: {e}")
 
-        return discovered
-
-    def _scan_module_for_routers(self, module_path: str) -> List[RouterConfig]:
-        """특정 모듈에서 APIRouter 인스턴스들을 찾아서 RouterConfig 생성"""
-        configs = []
+    def _find_routers_in_path(self, module_path: str) -> List[APIRouter]:
+        """지정된 경로에서 라우터 찾기"""
+        routers = []
 
         try:
-            # 모듈의 실제 파일 경로 확인
-            src_path = Path(__file__).parent.parent.parent
-            module_file_path = src_path / module_path.replace('.', '/')
+            base_path = Path(__file__).parent.parent.parent
+            scan_dir = base_path / module_path.replace('.', '/')
 
-            if not module_file_path.exists():
-                logger.debug(f"Module path does not exist: {module_file_path}")
-                return configs
+            if not scan_dir.exists():
+                logger.debug(f"Path not found: {scan_dir}")
+                return routers
 
-            # Python 파일들 스캔
-            for py_file in module_file_path.rglob("*.py"):
-                if py_file.name == "__init__.py":
+            # Python 파일 스캔
+            for py_file in scan_dir.rglob("*.py"):
+                if py_file.name.startswith("__"):
                     continue
 
-                # 모듈 경로 구성
-                relative_path = py_file.relative_to(src_path)
-                module_name = str(relative_path.with_suffix('')).replace(os.sep, '.')
-
-                try:
-                    module = importlib.import_module(module_name)
-                    router_configs = self._extract_routers_from_module(module, module_name)
-                    configs.extend(router_configs)
-                except Exception as e:
-                    logger.debug(f"Could not import module {module_name}: {e}")
+                module_name = self._get_module_name(py_file, base_path)
+                found_routers = self._extract_routers_from_module(module_name)
+                routers.extend(found_routers)
 
         except Exception as e:
-            logger.error(f"Error scanning module {module_path}: {e}")
+            logger.error(f"Error scanning {module_path}: {e}")
 
-        return configs
+        return routers
 
-    def _extract_routers_from_module(self, module, module_path: str) -> List[RouterConfig]:
-        """모듈에서 APIRouter 인스턴스들을 추출"""
-        configs = []
+    def _get_module_name(self, file_path: Path, base_path: Path) -> str:
+        """파일 경로를 모듈 이름으로 변환"""
+        relative_path = file_path.relative_to(base_path)
+        return str(relative_path.with_suffix('')).replace('/', '.')
 
-        for name, obj in inspect.getmembers(module):
-            if isinstance(obj, APIRouter):
-                # 라우터 이름과 태그로부터 prefix 추론
-                prefix = self._infer_prefix_from_router(obj, name, module_path)
-                tags = self._infer_tags_from_router(obj, name, module_path)
+    def _extract_routers_from_module(self, module_name: str) -> List[APIRouter]:
+        """모듈에서 APIRouter 인스턴스 추출"""
+        routers = []
 
-                config = RouterConfig(
-                    module_path=module_path,
-                    router_name=name,
-                    prefix=prefix,
-                    tags=tags,
-                    enabled=True
-                )
-                configs.append(config)
-                logger.info(f"Discovered router: {name} in {module_path}")
+        try:
+            module = importlib.import_module(module_name)
 
-        return configs
+            for name, obj in inspect.getmembers(module):
+                if isinstance(obj, APIRouter):
+                    # prefix와 tags 설정
+                    if not obj.prefix:
+                        obj.prefix = self._infer_prefix(name, module_name)
+                    if not obj.tags:
+                        obj.tags = self._infer_tags(name, module_name)
 
-    def _infer_prefix_from_router(self, router: APIRouter, name: str, module_path: str) -> Optional[str]:
-        """라우터 이름이나 모듈 경로에서 prefix 추론"""
-        # 이미 prefix가 설정되어 있으면 그것을 사용
-        if hasattr(router, 'prefix') and router.prefix:
-            return router.prefix
+                    routers.append(obj)
+                    logger.info(f"Found router: {name} in {module_name}")
 
+        except ImportError:
+            logger.debug(f"Could not import {module_name}")
+        except Exception as e:
+            logger.error(f"Error processing {module_name}: {e}")
+
+        return routers
+
+    def _infer_prefix(self, router_name: str, module_path: str) -> Optional[str]:
+        """라우터 이름/경로에서 prefix 추론"""
         # 라우터 이름에서 추론 (chat_router -> /chat)
-        if name.endswith('_router'):
-            return f"/{name.replace('_router', '')}"
-
-        # 모듈 경로에서 추론 (chat_controller -> /chat)
-        if 'chat' in module_path.lower():
-            return '/chat'
-        elif 'user' in module_path.lower():
-            return '/users'
-        elif 'auth' in module_path.lower():
-            return '/auth'
-
-        return None
-
-    def _infer_tags_from_router(self, router: APIRouter, name: str, module_path: str) -> Optional[List[str]]:
-        """라우터에서 태그 추론"""
-        # 이미 태그가 설정되어 있으면 그것을 사용
-        if hasattr(router, 'tags') and router.tags:
-            return router.tags
-
-        # 라우터 이름에서 추론
-        if name.endswith('_router'):
-            tag = name.replace('_router', '')
-            return [tag]
+        if router_name.endswith('_router'):
+            return f"/{router_name[:-7]}"  # '_router' 제거
 
         # 모듈 경로에서 추론
-        if 'chat' in module_path.lower():
-            return ['chat']
-        elif 'user' in module_path.lower():
-            return ['users']
-        elif 'auth' in module_path.lower():
-            return ['auth']
+        path_parts = module_path.lower().split('.')
+        for part in ['chat', 'suggestion', 'upload']:
+            if part in path_parts:
+                return f"/{part}"
 
         return None
 
-    def _register_router_from_config(self, config: RouterConfig) -> None:
-        """개별 라우터 설정으로부터 등록"""
-        module = importlib.import_module(config.module_path)
-        router = getattr(module, config.router_name)
+    def _infer_tags(self, router_name: str, module_path: str) -> Optional[List[str]]:
+        """라우터 이름/경로에서 태그 추론"""
+        # 라우터 이름에서 추론
+        if router_name.endswith('_router'):
+            return [router_name[:-7]]
 
-        if not isinstance(router, APIRouter):
-            raise ValueError(f"{config.router_name} is not an APIRouter instance")
+        # 모듈 경로에서 추론
+        path_parts = module_path.lower().split('.')
+        for part in ['chat', 'suggestion', 'upload']:
+            if part in path_parts:
+                return [part]
 
-        # 설정 적용 (기존 설정이 없는 경우만)
-        if config.prefix and not getattr(router, 'prefix', None):
-            router.prefix = config.prefix
-        if config.tags and not getattr(router, 'tags', None):
-            router.tags = config.tags
+        return None
 
-        self._routers.append(router)
-        logger.info(f"Auto-registered router: {config.router_name} from {config.module_path}")
 
-    def get_routers(self) -> List[APIRouter]:
-        """등록된 모든 라우터 반환"""
-        return self._routers.copy()
-
-    def add_router_config(self, config: RouterConfig) -> None:
-        """런타임에 라우터 설정 추가"""
-        try:
-            self._register_router_from_config(config)
-        except Exception as e:
-            logger.error(f"Failed to add router config {config.router_name}: {e}")
-
-    def add_router_path(self, base_path: str) -> None:
-        """새로운 스캔 경로 추가"""
-        if base_path not in self._base_router_paths:
-            self._base_router_paths.append(base_path)
-            logger.info(f"Added router scan path: {base_path}")
+# 팩토리 함수 (간단한 인터페이스 제공)
+def setup_routers() -> List[APIRouter]:
+    """라우터 설정 팩토리 함수"""
+    registry = RouterRegistry()
+    registry.setup_all_routers()
+    return registry.get_routers()

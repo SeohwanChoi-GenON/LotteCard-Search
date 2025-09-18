@@ -1,8 +1,7 @@
-import logging
 from fastapi import APIRouter, HTTPException, status, Request, Response
 from typing import List
 
-from configuration.settings.logger.logger_config import get_logger
+from configuration.factories.logger_factory import get_logger
 from .schemas.request_schema import SuggestionRequest
 from .schemas.response_schema import SuggestionResponse
 from ..common.decorators import handle_exceptions, log_request_response, validate_request, handle_gateway_integration

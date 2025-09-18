@@ -1,11 +1,10 @@
 from fastapi import APIRouter, HTTPException, status, UploadFile, File, Form
 from datetime import datetime
-import logging
 import json
 import uuid
 from typing import Optional, Dict, Any
 
-from configuration.settings.logger.logger_config import get_logger
+from configuration.factories.logger_factory import get_logger
 from infrastructure.adapters.primary.web.common.decorators import handle_exceptions, log_request_response, \
     validate_request
 from infrastructure.adapters.primary.web.common.schemas.base_schemas import ErrorResponse

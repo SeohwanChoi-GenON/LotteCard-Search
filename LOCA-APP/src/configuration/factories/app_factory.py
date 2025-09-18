@@ -1,12 +1,12 @@
 from fastapi import FastAPI
 from typing import AsyncGenerator, Callable
-import logging
 
-from configuration.factories.middleware_factory import configure_middleware
-from configuration.factories.router_factory import RouterRegistry
+from configuration.factories.middleware_factory import setup_middlewares
+from configuration.factories.router_factory import setup_routers
 from configuration.settings.app_settings import AppSettings
+from configuration.factories.logger_factory import get_logger
 
-logger = logging.getLogger()
+logger = get_logger()
 
 
 def create_app(settings: AppSettings, lifespan: Callable[[FastAPI], AsyncGenerator[None, None]] = None) -> FastAPI:
@@ -23,22 +23,20 @@ def create_app(settings: AppSettings, lifespan: Callable[[FastAPI], AsyncGenerat
     )
 
     # 미들웨어 설정
-    configure_middleware(app, settings)
+    setup_middlewares(app, settings)
 
     # 라우터 등록
-    _register_routers(app, settings)
+    _setup_app_routers(app, settings)
 
     logger.info(f"FastAPI application created: {settings.APP_NAME} v{settings.APP_VERSION}")
     return app
 
-
-def _register_routers(app: FastAPI, settings: AppSettings) -> None:
-    """라우터 등록"""
-    router_registry = RouterRegistry()
-    router_registry.auto_register_from_configs()
+def _setup_app_routers(app: FastAPI, settings: AppSettings) -> None:
+    """애플리케이션 라우터 설정"""
+    routers = setup_routers()
 
     registered_count = 0
-    for router in router_registry.get_routers():
+    for router in routers:
         app.include_router(router, prefix=settings.API_V1_PREFIX)
         registered_count += 1
 
